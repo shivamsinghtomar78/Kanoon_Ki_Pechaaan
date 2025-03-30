@@ -7,25 +7,22 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from dotenv import load_dotenv
 import os
-import time
-from datetime import datetime
 import re
 import json
 import http.client
 import urllib.parse
 
-# Load environment variables
+ 
 load_dotenv()
 
-# Streamlit page configuration
+ 
 st.set_page_config(
     page_title="Kanoon ki Pehchaan",
     page_icon="⚖",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Custom CSS for animations and styling
+ 
 def local_css():
     st.markdown("""
     <style>
@@ -127,10 +124,10 @@ def local_css():
     </style>
     """, unsafe_allow_html=True)
 
-# Apply custom CSS
+ 
 local_css()
 
-# Pydantic models for structured output
+ 
 class LegalReference(BaseModel):
     title: str = Field(description="Title of the legal document or case")
     source: str = Field(description="Source of the document (court, statute, etc.)")
@@ -145,7 +142,7 @@ class LegalAnalysis(BaseModel):
     practical_implications: str = Field(description="Practical implications for the person asking")
     references: List[LegalReference] = Field(description="Detailed references to relevant cases and statutes")
 
-# Initialize session state
+ 
 def init_session_state():
     if "messages" not in st.session_state:
         st.session_state.messages = [
@@ -158,7 +155,7 @@ def init_session_state():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = True
 
-# Initialize the model
+ 
 @st.cache_resource
 def get_model():
     try:
@@ -167,7 +164,7 @@ def get_model():
         st.error(f"Failed to initialize model: {e}")
         return None
 
-# Setup structured chain
+ 
 def setup_structured_chain():
     parser = PydanticOutputParser(pydantic_object=LegalAnalysis)
     template = """
@@ -193,12 +190,12 @@ def setup_structured_chain():
     chain = prompt | model | parser
     return chain
 
-# Check if query is related to Indian law
+ 
 def is_indian_law_related(query):
     if not query or not isinstance(query, str):
         return False
     query = query.lower()
-    indian_legal_keywords = ["indian", "india", "ipc", "crpc", "constitution", "section", "act", "law", "case", "statute", "article", "court"]
+    indian_legal_keywords = ["indian", "india", "ipc", "crpc", "constitution", "section", "act", "law", "case", "statute", "article", "court", "legal", "judgment", "judicial", "tribunal", "supreme court", "high court", "judicial review", "precedent","Fundamental","fundamental","rights","DPSP","Directive","Principles","State","Policy","Article","Section","Judicial","Review"]
     for keyword in indian_legal_keywords:
         if keyword in query:
             return True
@@ -207,8 +204,7 @@ def is_indian_law_related(query):
         if re.search(pattern, query, re.IGNORECASE):
             return True
     return False
-
-# Indian Kanoon API wrapper
+ 
 class IKApi:
     def __init__(self, token):
         self.headers = {'Authorization': f'Token {token}', 'Accept': 'application/json'}
@@ -230,7 +226,7 @@ class IKApi:
         url = f'/doc/{doc_id}/'
         return self.call_api(url)
 
-# Fetch data from Indian Kanoon
+ 
 def fetch_indian_kanoon_data(query):
     api_key = os.getenv("INDIAN_KANOON_API_KEY")
     if not api_key:
@@ -254,9 +250,8 @@ def fetch_indian_kanoon_data(query):
         st.error(f"Failed to fetch data from Indian Kanoon: {e}")
         return None
 
-# Process legal query
+ 
 def process_legal_query(query, kanoon_data):
-    start_time = time.time()
     try:
         formatted_kanoon_data = "No data found from Indian Kanoon."
         if kanoon_data and kanoon_data.get("found", 0) > 0:
@@ -273,10 +268,8 @@ def process_legal_query(query, kanoon_data):
                 formatted_kanoon_data += "\n"
         chain = setup_structured_chain()
         result = chain.invoke({"query": query, "kanoon_data": formatted_kanoon_data})
-        process_time = time.time() - start_time
-        return result, process_time
+        return result
     except Exception as e:
-        process_time = time.time() - start_time
         st.error(f"Error processing with Gemini: {str(e)}")
         fallback_response = LegalAnalysis(
             query_summary=query,
@@ -285,9 +278,9 @@ def process_legal_query(query, kanoon_data):
             practical_implications=f"Error occurred during analysis: {str(e)}",
             references=[]
         )
-        return fallback_response, process_time
+        return fallback_response
 
-# Format response for display
+
 def format_response_for_display(legal_analysis):
     formatted_response = f"""
 ### Query Summary
@@ -320,7 +313,6 @@ def format_response_for_display(legal_analysis):
             formatted_response += f"- Citation: {ref.citation}\n"
     return formatted_response
 
-# Display messages with animations
 def display_messages():
     for message in st.session_state.messages:
         if message["role"] == "user":
@@ -329,46 +321,33 @@ def display_messages():
                 <div style="background: rgba(227, 242, 253, 0.2); padding: 12px; border-radius: 15px; border: 1px solid rgba(187, 222, 251, 0.3); margin-bottom: 8px; color: #ffffff;">
                     {message["content"]}
                 </div>
-                <div style="font-size: 0.8em; color: #bbdefb; text-align: right; margin-top: 4px;">
-                    {message.get("timestamp", datetime.now().strftime("%H:%M"))}
-                </div>
                 """, unsafe_allow_html=True)
         elif message["role"] == "assistant":
             with st.chat_message("assistant", avatar="⚖"):
                 st.markdown(f"""
                 <div class="assistant-message">
                     {message["content"]}
-                    <div style="font-size: 0.8em; color: #e9ecef; text-align: right; margin-top: 4px;">
-                        {message.get("timestamp", datetime.now().strftime("%H:%M"))} | ⏱ {message.get("response_time", 0.0):.1f}s
-                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-# Process user input
+
 def process_user_input(user_input):
-    timestamp = datetime.now().strftime("%H:%M")
-    st.session_state.messages.append({"role": "user", "content": user_input, "timestamp": timestamp})
+    st.session_state.messages.append({"role": "user", "content": user_input})
     is_legal_query = is_indian_law_related(user_input)
     if not is_legal_query:
         response = "I can only answer questions related to Indian law. Please rephrase your query to focus on Indian legal matters."
-        response_time = 0.0
     else:
         kanoon_data = fetch_indian_kanoon_data(user_input)
         if kanoon_data:
-            legal_analysis, response_time = process_legal_query(user_input, kanoon_data)
+            legal_analysis = process_legal_query(user_input, kanoon_data)
             response = format_response_for_display(legal_analysis)
         else:
             response = "Sorry, I couldn't find relevant legal information for your query. Please try rephrasing your question with more specific legal terms or references."
-            response_time = 0.0
     st.session_state.messages.append({
         "role": "assistant", 
-        "content": response, 
-        "timestamp": datetime.now().strftime("%H:%M"),
-        "response_time": response_time
+        "content": response
     })
-    st.session_state.response_time = response_time
 
- 
 def main():
     init_session_state()
     with st.sidebar:

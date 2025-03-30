@@ -17,12 +17,11 @@ def get_db_connection():
         database="lawyers"
     )
 
-# Configure logging
+ 
 logging.basicConfig(level=logging.INFO, 
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-# Load environment variables
+ 
 load_dotenv()
 api_key = os.getenv("FIREBASE_API_KEY")
 
@@ -30,7 +29,7 @@ if not api_key:
     logger.error("Firebase API key not found.")
     st.error("Configuration error: Firebase API key not available.")
 
-# Initialize Firebase
+ 
 def init_firebase():
     try:
         if not firebase_admin._apps:
@@ -283,7 +282,7 @@ def auth_page():
 
 def main():
     if st.session_state.get('authenticated', False):
-        st.switch_page("pages/home.py")
+        st.switch_page("pages/1_Bot.py")
     else:
         auth_page()
     st.markdown('<div class="footer">Powered by Firebase</div>', unsafe_allow_html=True)
