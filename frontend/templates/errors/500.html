@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Kanoon Ki Pechaan{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="glass-card text-center">
+                    <div class="error-illustration mb-4">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 8rem; color: #ff6b6b; opacity: 0.7;"></i>
+                    </div>
+                    
+                    <h1 class="display-1 text-danger mb-3">500</h1>
+                    <h2 class="mb-4">Internal Server Error</h2>
+                    
+                    <p class="text-muted mb-5 lead">
+                        Something went wrong on our end. Our legal eagles are working to fix this issue. 
+                        Please try again in a few moments.
+                    </p>
+                    
+                    <!-- Error Details (only in debug mode) -->
+                    {% if config.DEBUG and error_details %}
+                    <div class="alert alert-danger text-start mb-4">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-bug me-2"></i>Debug Information
+                        </h6>
+                        <pre class="mb-0"><code>{{ error_details }}</code></pre>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="row g-3 mb-5">
+                        <div class="col-md-4">
+                            <button class="btn btn-primary w-100" onclick="location.reload()">
+                                <i class="fas fa-redo me-2"></i>Try Again
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-home me-2"></i>Go Home
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-secondary w-100" onclick="reportError()">
+                                <i class="fas fa-bug me-2"></i>Report Issue
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Information -->
+                    <div class="border-top border-secondary pt-4">
+                        <h5 class="text-magenta mb-3">What You Can Do</h5>
+                        <div class="row g-3 text-start">
+                            <div class="col-md-6">
+                                <div class="status-item">
+                                    <i class="fas fa-clock text-cyan me-3"></i>
+                                    <div>
+                                        <h6 class="mb-1">Wait a Moment</h6>
+                                        <p class="text-muted small mb-0">
+                                            This is usually temporary. Try refreshing the page in a few seconds.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="status-item">
+                                    <i class="fas fa-route text-cyan me-3"></i>
+                                    <div>
+                                        <h6 class="mb-1">Try Different Path</h6>
+                                        <p class="text-muted small mb-0">
+                                            Navigate to a different section and come back later.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="status-item">
+                                    <i class="fas fa-envelope text-cyan me-3"></i>
+                                    <div>
+                                        <h6 class="mb-1">Contact Support</h6>
+                                        <p class="text-muted small mb-0">
+                                            If the problem persists, let us know about the issue.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="status-item">
+                                    <i class="fas fa-shield-alt text-cyan me-3"></i>
+                                    <div>
+                                        <h6 class="mb-1">Data Safe</h6>
+                                        <p class="text-muted small mb-0">
+                                            Your data is secure. No information has been lost.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Alternative Actions -->
+                    <div class="mt-5">
+                        <h6 class="text-muted mb-3">Meanwhile, you can:</h6>
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a href="/features/chatbot" class="btn btn-outline-cyan btn-sm">
+                                <i class="fas fa-robot me-2"></i>Use AI Assistant
+                            </a>
+                            <a href="/features/documents" class="btn btn-outline-magenta btn-sm">
+                                <i class="fas fa-file-alt me-2"></i>Manage Documents
+                            </a>
+                            <a href="/features/lawyers" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-users me-2"></i>Find Lawyers
+                            </a>
+                            <a href="/profile" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-user me-2"></i>View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Report Error Modal -->
+<div class="modal fade" id="reportErrorModal" tabindex="-1" aria-labelledby="reportErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportErrorModalLabel">
+                    <i class="fas fa-bug me-2"></i>Report Issue
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="errorReportForm">
+                    <div class="mb-3">
+                        <label for="errorDescription" class="form-label">
+                            <i class="fas fa-comment me-2"></i>What were you trying to do?
+                        </label>
+                        <textarea class="form-control" id="errorDescription" name="description" 
+                                  rows="3" placeholder="Describe what you were doing when the error occurred..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userEmail" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Your Email (optional)
+                        </label>
+                        <input type="email" class="form-control" id="userEmail" name="email" 
+                               placeholder="your.email@example.com">
+                        <small class="text-muted">We'll contact you if we need more information</small>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="includeTechnicalInfo" name="include_tech" checked>
+                        <label class="form-check-label" for="includeTechnicalInfo">
+                            Include technical information to help us debug
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="errorReportForm" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Send Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.error-illustration {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+.status-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.status-item:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--primary-cyan);
+}
+
+.display-1 {
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.alert pre {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 1rem;
+    overflow-x: auto;
+    max-height: 200px;
+}
+
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 4rem;
+    }
+    
+    .status-item {
+        padding: 0.75rem;
+    }
+    
+    .status-item i {
+        font-size: 1.2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function reportError() {
+    const modal = new bootstrap.Modal(document.getElementById('reportErrorModal'));
+    modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle error report form
+    const errorReportForm = document.getElementById('errorReportForm');
+    if (errorReportForm) {
+        errorReportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const reportData = {
+                description: formData.get('description'),
+                email: formData.get('email'),
+                include_tech: formData.has('include_tech'),
+                url: window.location.href,
+                timestamp: new Date().toISOString(),
+                user_agent: navigator.userAgent
+            };
+            
+            // Send error report (implement your error reporting logic here)
+            console.log('Error report:', reportData);
+            
+            // Show success message
+            Utils.showAlert('Error report sent successfully. Thank you for helping us improve!', 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('reportErrorModal'));
+            modal.hide();
+            
+            // Reset form
+            e.target.reset();
+        });
+    }
+    
+    // Auto-retry logic
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    function autoRetry() {
+        if (retryCount < maxRetries) {
+            retryCount++;
+            setTimeout(() => {
+                console.log(`Auto retry attempt ${retryCount}`);
+                // You can implement automatic retry logic here
+                // For now, we'll just log it
+            }, 5000 * retryCount); // Exponential backoff
+        }
+    }
+    
+    // Track 500 errors (optional analytics)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'server_error', {
+            'page_location': window.location.href,
+            'error_type': '500'
+        });
+    }
+    
+    // Optional: Start auto-retry
+    // autoRetry();
+});
+</script>
+{% endblock %}

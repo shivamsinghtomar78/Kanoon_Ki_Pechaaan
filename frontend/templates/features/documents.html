@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Document Analyzer - Kanoon Ki Pechaan{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-2">
+                            <i class="fas fa-file-alt text-magenta me-3"></i>Document Analyzer
+                        </h2>
+                        <p class="text-muted mb-0">Upload and analyze legal documents with AI</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showUploadModal()">
+                        <i class="fas fa-upload me-2"></i>Upload Document
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Upload Area -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card text-center p-5" id="uploadArea" 
+                     onclick="document.getElementById('fileInput').click()"
+                     ondrop="handleDrop(event)" 
+                     ondragover="handleDragOver(event)"
+                     ondragleave="handleDragLeave(event)">
+                    <div id="uploadContent">
+                        <i class="fas fa-cloud-upload-alt text-cyan" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3 mb-3">Drop files here or click to upload</h4>
+                        <p class="text-muted mb-3">
+                            Supported formats: PDF, DOC, DOCX, TXT<br>
+                            Maximum file size: 50MB
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <span class="badge bg-primary">PDF</span>
+                            <span class="badge bg-success">DOC</span>
+                            <span class="badge bg-info">DOCX</span>
+                            <span class="badge bg-warning">TXT</span>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" 
+                           style="display: none;" onchange="handleFileSelect(event)">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documents List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">
+                            <i class="fas fa-folder text-cyan me-2"></i>Your Documents
+                        </h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshDocuments()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                        type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-1"></i>Filter
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="filterDocuments('all')">All Documents</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="filterDocuments('processed')">Processed</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="filterDocuments('processing')">Processing</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="filterDocuments('failed')">Failed</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="documentsContainer">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-cyan" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading documents...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Document Details Modal -->
+<div class="modal fade" id="documentModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-alt text-magenta me-2"></i>
+                    <span id="modalDocumentTitle">Document Details</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalDocumentContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="downloadDocBtn">
+                    <i class="fas fa-download me-1"></i>Download
+                </button>
+                <button type="button" class="btn btn-outline-warning" id="reprocessDocBtn">
+                    <i class="fas fa-sync-alt me-1"></i>Reprocess
+                </button>
+                <button type="button" class="btn btn-outline-danger" id="deleteDocBtn">
+                    <i class="fas fa-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Progress Modal -->
+<div class="modal fade" id="uploadProgressModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-upload text-cyan me-2"></i>Uploading Document
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span id="uploadFileName">Uploading...</span>
+                        <span id="uploadPercent">0%</span>
+                    </div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar" id="uploadProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small class="text-muted">Please don't close this window while uploading...</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.upload-area-dragover {
+    border: 2px dashed var(--primary-cyan) !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+    transform: scale(1.02);
+}
+
+.document-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.document-card:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+.document-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.status-badge.completed {
+    background: linear-gradient(135deg, var(--primary-green), #00AA00);
+}
+
+.status-badge.processing {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: var(--dark-bg);
+}
+
+.status-badge.failed {
+    background: linear-gradient(135deg, #FF0000, #CC0000);
+}
+
+.document-summary {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.key-points {
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.key-points ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.key-points li {
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+#uploadArea {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+#uploadArea:hover {
+    border-color: var(--primary-cyan);
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.document-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.document-card:hover .document-actions {
+    opacity: 1;
+}
+
+.file-type-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    margin-right: 1rem;
+}
+
+.file-type-icon.pdf { background: #FF4444; }
+.file-type-icon.doc { background: #4472C4; }
+.file-type-icon.docx { background: #4472C4; }
+.file-type-icon.txt { background: #666666; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/documents.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Kanoon Ki Pechaan{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<section class="py-4 bg-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-tachometer-alt text-cyan me-3"></i>
+                    Welcome back, <span id="userName">User</span>!
+                </h1>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    <span id="currentDate"></span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <span class="badge bg-primary fs-6" id="userTypeBadge">
+                    <i class="fas fa-user me-1"></i>User
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card text-center h-100 quick-action-card" onclick="window.location.href='/chatbot'">
+                    <div class="feature-icon text-cyan">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h5 class="mb-2">AI Assistant</h5>
+                    <p class="text-muted mb-3">Get instant legal advice</p>
+                    <div class="btn btn-outline-cyan btn-sm">
+                        <i class="fas fa-comments me-1"></i>Start Chat
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card text-center h-100 quick-action-card" onclick="window.location.href='/documents'">
+                    <div class="feature-icon text-magenta">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h5 class="mb-2">Document Analyzer</h5>
+                    <p class="text-muted mb-3">Upload & analyze documents</p>
+                    <div class="btn btn-outline-magenta btn-sm">
+                        <i class="fas fa-upload me-1"></i>Upload
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card text-center h-100 quick-action-card" onclick="window.location.href='/lawyers'">
+                    <div class="feature-icon text-green">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h5 class="mb-2">Find Lawyers</h5>
+                    <p class="text-muted mb-3">Connect with legal experts</p>
+                    <div class="btn btn-outline-success btn-sm">
+                        <i class="fas fa-search me-1"></i>Search
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card text-center h-100 quick-action-card" onclick="window.location.href='/profile'">
+                    <div class="feature-icon text-cyan">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h5 class="mb-2">Profile Settings</h5>
+                    <p class="text-muted mb-3">Manage your account</p>
+                    <div class="btn btn-outline-cyan btn-sm">
+                        <i class="fas fa-cog me-1"></i>Settings
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Content -->
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Recent Activity -->
+                <div class="glass-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">
+                            <i class="fas fa-clock text-cyan me-2"></i>Recent Activity
+                        </h4>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshActivity()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                    
+                    <div id="recentActivity">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-cyan" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading recent activity...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Legal Categories -->
+                <div class="glass-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-gavel text-magenta me-2"></i>Legal Categories
+                    </h4>
+                    
+                    <div class="row g-3" id="legalCategories">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- User Stats -->
+                <div class="glass-card mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-bar text-cyan me-2"></i>Your Statistics
+                    </h5>
+                    
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-cyan" id="chatCount">0</div>
+                                <div class="stat-label text-muted">Chat Sessions</div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-magenta" id="documentCount">0</div>
+                                <div class="stat-label text-muted">Documents</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number text-green" id="connectionCount">0</div>
+                                <div class="stat-label text-muted">Connections</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number text-warning" id="daysSinceJoined">0</div>
+                                <div class="stat-label text-muted">Days Active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Documents -->
+                <div class="glass-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-alt text-magenta me-2"></i>Recent Documents
+                        </h5>
+                        <a href="/documents" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>View All
+                        </a>
+                    </div>
+                    
+                    <div id="recentDocuments">
+                        <div class="text-center py-3">
+                            <div class="spinner-border spinner-border-sm text-magenta" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Tips -->
+                <div class="glass-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-lightbulb text-yellow me-2"></i>Quick Tips
+                    </h5>
+                    
+                    <div class="tips-container">
+                        <div class="tip-item mb-3">
+                            <div class="d-flex">
+                                <i class="fas fa-circle text-cyan me-2 mt-1" style="font-size: 0.5rem;"></i>
+                                <div>
+                                    <strong>Use specific keywords</strong><br>
+                                    <small class="text-muted">Be specific when asking legal questions for better AI responses.</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item mb-3">
+                            <div class="d-flex">
+                                <i class="fas fa-circle text-magenta me-2 mt-1" style="font-size: 0.5rem;"></i>
+                                <div>
+                                    <strong>Upload clear documents</strong><br>
+                                    <small class="text-muted">Ensure documents are clear and readable for better analysis.</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="d-flex">
+                                <i class="fas fa-circle text-green me-2 mt-1" style="font-size: 0.5rem;"></i>
+                                <div>
+                                    <strong>Connect with lawyers</strong><br>
+                                    <small class="text-muted">For complex issues, consider connecting with qualified lawyers.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.quick-action-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+}
+
+.tip-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tip-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item {
+    padding: 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.text-yellow {
+    color: #FFD700 !important;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    // Load dashboard data
+    loadDashboardData();
+    loadRecentActivity();
+    loadRecentDocuments();
+    loadLegalCategories();
+});
+
+async function loadDashboardData() {
+    try {
+        if (window.currentUser) {
+            // Update user name and type
+            document.getElementById('userName').textContent = window.currentUser.name || 'User';
+            
+            const userTypeBadge = document.getElementById('userTypeBadge');
+            if (window.currentUser.user_type === 'lawyer') {
+                userTypeBadge.innerHTML = '<i class="fas fa-user-tie me-1"></i>Lawyer';
+                userTypeBadge.className = 'badge bg-success fs-6';
+            } else {
+                userTypeBadge.innerHTML = '<i class="fas fa-user me-1"></i>Client';
+                userTypeBadge.className = 'badge bg-primary fs-6';
+            }
+            
+            // Calculate days since joined
+            const joinedDate = new Date(window.currentUser.created_at);
+            const today = new Date();
+            const daysSinceJoined = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('daysSinceJoined').textContent = daysSinceJoined;
+        }
+        
+        // Load statistics
+        await loadUserStats();
+        
+    } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+    }
+}
+
+async function loadUserStats() {
+    try {
+        // Load chat sessions count
+        const chatResponse = await API.get('/chatbot/sessions');
+        if (chatResponse.success) {
+            document.getElementById('chatCount').textContent = chatResponse.sessions.length;
+        }
+        
+        // Load documents count
+        const docsResponse = await API.get('/documents/');
+        if (docsResponse.success) {
+            document.getElementById('documentCount').textContent = docsResponse.documents.length;
+        }
+        
+        // Load connections count
+        const connectionsResponse = await API.get('/lawyers/connections');
+        if (connectionsResponse.success) {
+            document.getElementById('connectionCount').textContent = connectionsResponse.connections.length;
+        }
+        
+    } catch (error) {
+        console.error('Failed to load user stats:', error);
+    }
+}
+
+async function loadRecentActivity() {
+    const container = document.getElementById('recentActivity');
+    
+    try {
+        // Simulate recent activity (in real app, this would be from backend)
+        const activities = [
+            {
+                type: 'chat',
+                title: 'Started AI conversation about property law',
+                time: '2 hours ago',
+                icon: 'fas fa-robot',
+                color: 'text-cyan'
+            },
+            {
+                type: 'document',
+                title: 'Analyzed contract document',
+                time: '1 day ago',
+                icon: 'fas fa-file-alt',
+                color: 'text-magenta'
+            },
+            {
+                type: 'connection',
+                title: 'Connected with lawyer for consultation',
+                time: '3 days ago',
+                icon: 'fas fa-handshake',
+                color: 'text-green'
+            }
+        ];
+        
+        if (activities.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-history text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">No recent activity</p>
+                    <a href="/chatbot" class="btn btn-primary">
+                        <i class="fas fa-rocket me-2"></i>Get Started
+                    </a>
+                </div>
+            `;
+        } else {
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="d-flex align-items-center">
+                        <i class="${activity.icon} ${activity.color} me-3"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-medium">${activity.title}</div>
+                            <small class="text-muted">${activity.time}</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+    } catch (error) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
+                <p class="text-muted mt-3">Failed to load recent activity</p>
+            </div>
+        `;
+    }
+}
+
+async function loadRecentDocuments() {
+    const container = document.getElementById('recentDocuments');
+    
+    try {
+        const response = await API.get('/documents/');
+        if (response.success) {
+            const recentDocs = response.documents.slice(0, 3);
+            
+            if (recentDocs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-file-plus text-muted"></i>
+                        <p class="text-muted small mt-2">No documents yet</p>
+                        <a href="/documents" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-upload me-1"></i>Upload First Document
+                        </a>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = recentDocs.map(doc => `
+                    <div class="d-flex align-items-center mb-2 p-2 rounded" style="background: rgba(255,255,255,0.05);">
+                        <i class="fas fa-file-alt text-magenta me-2"></i>
+                        <div class="flex-grow-1">
+                            <div class="small fw-medium">${Utils.truncateText(doc.original_filename, 20)}</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">${Utils.formatDate(doc.created_at)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (error) {
+        container.innerHTML = `
+            <div class="text-center py-3">
+                <i class="fas fa-exclamation-triangle text-warning"></i>
+                <p class="text-muted small mt-2">Failed to load</p>
+            </div>
+        `;
+    }
+}
+
+async function loadLegalCategories() {
+    const container = document.getElementById('legalCategories');
+    
+    try {
+        const response = await API.get('/chatbot/legal-categories');
+        if (response.success) {
+            container.innerHTML = response.categories.slice(0, 6).map(category => `
+                <div class="col-md-6 mb-3">
+                    <div class="glass-card text-center p-3 h-100 category-card" onclick="startCategoryChat('${category.id}')">
+                        <h6 class="text-cyan mb-2">${category.name}</h6>
+                        <p class="text-muted small mb-0">${category.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        container.innerHTML = `
+            <div class="col-12 text-center">
+                <p class="text-muted">Failed to load legal categories</p>
+            </div>
+        `;
+    }
+}
+
+function startCategoryChat(categoryId) {
+    // Redirect to chatbot with category pre-selected
+    window.location.href = `/chatbot?category=${categoryId}`;
+}
+
+function refreshActivity() {
+    loadRecentActivity();
+    Utils.showAlert('Activity refreshed!', 'success', 2000);
+}
+</script>
+{% endblock %}

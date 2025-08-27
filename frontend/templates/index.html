@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Kanoon Ki Pechaan - Your AI-powered Legal Assistant{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title fade-in-up">Kanoon Ki Pechaan</h1>
+                <p class="hero-subtitle fade-in-up">Your AI-powered Guide to Indian Legal System</p>
+                <p class="lead text-muted mb-4 fade-in-up">
+                    Access legal assistance, document analysis, and connect with qualified lawyers - all powered by advanced AI technology.
+                </p>
+                <div class="hero-buttons fade-in-up">
+                    {% if not session.user_id %}
+                    <a href="{{ url_for('register_page') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-rocket me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('login_page') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                    <a href="{{ url_for('chatbot_page') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-robot me-2"></i>AI Assistant
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-4 mb-4">
+                    <span class="text-cyan">Key</span> Features
+                </h2>
+                <p class="lead text-muted">
+                    Comprehensive legal assistance powered by cutting-edge AI technology
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4 class="mb-3">AI Legal Assistant</h4>
+                    <p class="text-muted">
+                        Get instant legal advice and explanations for Indian law matters using our advanced AI chatbot.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h4 class="mb-3">Document Analyzer</h4>
+                    <p class="text-muted">
+                        Upload and analyze legal documents with AI-powered summarization and key point extraction.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="mb-3">Lawyer Network</h4>
+                    <p class="text-muted">
+                        Connect with qualified lawyers based on your specific legal needs and location.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="mb-3">Secure & Private</h4>
+                    <p class="text-muted">
+                        Your legal information is protected with enterprise-grade security and privacy measures.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Legal Categories Section -->
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 mb-4">
+                    <span class="text-magenta">Legal</span> Expertise Areas
+                </h2>
+                <p class="lead text-muted">
+                    Our AI assistant is trained in various areas of Indian law
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-gavel text-cyan fs-1 mb-3"></i>
+                    <h5>Criminal Law</h5>
+                    <p class="text-muted">IPC, CrPC, bail procedures, criminal defense</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-handshake text-magenta fs-1 mb-3"></i>
+                    <h5>Civil Law</h5>
+                    <p class="text-muted">CPC, contracts, property disputes, tort claims</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-heart text-green fs-1 mb-3"></i>
+                    <h5>Family Law</h5>
+                    <p class="text-muted">Marriage, divorce, custody, maintenance</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-building text-cyan fs-1 mb-3"></i>
+                    <h5>Corporate Law</h5>
+                    <p class="text-muted">Company law, compliance, mergers</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-university text-magenta fs-1 mb-3"></i>
+                    <h5>Constitutional Law</h5>
+                    <p class="text-muted">Fundamental rights, writ petitions</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card text-center">
+                    <i class="fas fa-home text-green fs-1 mb-3"></i>
+                    <h5>Property Law</h5>
+                    <p class="text-muted">Real estate, land disputes, transfers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 mb-4">
+                    How <span class="text-cyan">It Works</span>
+                </h2>
+                <p class="lead text-muted">
+                    Get legal assistance in just a few simple steps
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4 class="mb-3">1. Sign Up</h4>
+                    <p class="text-muted">
+                        Create your account and choose whether you're a client seeking legal help or a lawyer offering services.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4 class="mb-3">2. Ask Questions</h4>
+                    <p class="text-muted">
+                        Use our AI assistant to get immediate answers to your legal questions or upload documents for analysis.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="mb-3">3. Connect</h4>
+                    <p class="text-muted">
+                        If needed, connect with qualified lawyers in our network for personalized legal assistance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Lawyers Section -->
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 mb-4">
+                    <span class="text-magenta">Featured</span> Lawyers
+                </h2>
+                <p class="lead text-muted">
+                    Connect with experienced legal professionals
+                </p>
+            </div>
+        </div>
+        
+        <div class="row" id="featuredLawyers">
+            <!-- Featured lawyers will be loaded here via JavaScript -->
+            <div class="col-12 text-center">
+                <div class="spinner-border text-cyan" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading featured lawyers...</p>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="{{ url_for('lawyers_page') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-users me-2"></i>View All Lawyers
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="glass-card text-center">
+                    <h3 class="mb-4">Ready to Get Started?</h3>
+                    <p class="lead text-muted mb-4">
+                        Join thousands of users who trust Kanoon Ki Pechaan for their legal needs
+                    </p>
+                    {% if not session.user_id %}
+                    <a href="{{ url_for('register_page') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-rocket me-2"></i>Start Free Today
+                    </a>
+                    <a href="{{ url_for('login_page') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-robot me-2"></i>Start Chatting with AI
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load featured lawyers
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await API.get('/lawyers/featured');
+        if (response.success) {
+            displayFeaturedLawyers(response.featured_lawyers);
+        }
+    } catch (error) {
+        console.error('Failed to load featured lawyers:', error);
+        document.getElementById('featuredLawyers').innerHTML = `
+            <div class="col-12 text-center">
+                <p class="text-muted">Unable to load featured lawyers at the moment.</p>
+            </div>
+        `;
+    }
+});
+
+function displayFeaturedLawyers(lawyers) {
+    const container = document.getElementById('featuredLawyers');
+    
+    if (lawyers.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center">
+                <p class="text-muted">No featured lawyers available at the moment.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = lawyers.slice(0, 3).map(lawyer => `
+        <div class="col-md-4 mb-4">
+            <div class="glass-card text-center h-100">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle text-cyan" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="text-light">${lawyer.name}</h5>
+                <p class="text-muted">${lawyer.degree || 'Legal Professional'}</p>
+                <p class="text-muted small">${lawyer.college || ''}</p>
+                <p class="text-cyan small">
+                    <i class="fas fa-handshake me-1"></i>
+                    ${lawyer.connection_count || 0} connections
+                </p>
+                <a href="/lawyers" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-eye me-1"></i>View Profile
+                </a>
+            </div>
+        </div>
+    `).join('');
+}
+</script>
+{% endblock %}

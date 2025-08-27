@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Kanoon Ki Pechaan{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="glass-card">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-plus text-cyan" style="font-size: 3rem;"></i>
+                        <h2 class="mt-3 mb-2">Create Account</h2>
+                        <p class="text-muted">Join Kanoon Ki Pechaan today</p>
+                    </div>
+                    
+                    <form id="registerForm" novalidate>
+                        <!-- Account Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-users me-2"></i>Account Type
+                            </label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="user_type" 
+                                               id="userType" value="user" checked>
+                                        <label class="form-check-label" for="userType">
+                                            <i class="fas fa-user me-2 text-cyan"></i>
+                                            <strong>Client</strong><br>
+                                            <small class="text-muted">Seeking legal assistance</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="user_type" 
+                                               id="lawyerType" value="lawyer">
+                                        <label class="form-check-label" for="lawyerType">
+                                            <i class="fas fa-user-tie me-2 text-magenta"></i>
+                                            <strong>Lawyer</strong><br>
+                                            <small class="text-muted">Providing legal services</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Basic Information -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Full Name *
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email Address *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone_no" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Phone Number
+                            </label>
+                            <input type="tel" class="form-control" id="phone_no" name="phone_no" 
+                                   placeholder="Enter your phone number">
+                        </div>
+                        
+                        <!-- Password Fields -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password *
+                                </label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Create a password" required>
+                                <small class="text-muted">Minimum 6 characters</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="confirm_password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Confirm Password *
+                                </label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                       placeholder="Confirm your password" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Lawyer-specific fields -->
+                        <div id="lawyerFields" style="display: none;">
+                            <hr class="my-4">
+                            <h5 class="text-cyan mb-3">
+                                <i class="fas fa-graduation-cap me-2"></i>Professional Information
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="degree" class="form-label">
+                                        <i class="fas fa-certificate me-2"></i>Degree
+                                    </label>
+                                    <input type="text" class="form-control" id="degree" name="degree" 
+                                           placeholder="e.g., LLB, LLM">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="college" class="form-label">
+                                        <i class="fas fa-university me-2"></i>College/University
+                                    </label>
+                                    <input type="text" class="form-control" id="college" name="college" 
+                                           placeholder="Enter your institution">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="qualifications" class="form-label">
+                                    <i class="fas fa-award me-2"></i>Qualifications & Specializations
+                                </label>
+                                <textarea class="form-control" id="qualifications" name="qualifications" 
+                                          rows="3" placeholder="Describe your qualifications, experience, and areas of specialization"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the 
+                                    <a href="#" class="text-cyan text-decoration-none">Terms and Conditions</a> 
+                                    and 
+                                    <a href="#" class="text-cyan text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-3">Already have an account?</p>
+                        <a href="{{ url_for('login_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle user type change
+    const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+    const lawyerFields = document.getElementById('lawyerFields');
+    
+    userTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'lawyer') {
+                lawyerFields.style.display = 'block';
+                lawyerFields.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                lawyerFields.style.display = 'none';
+            }
+        });
+    });
+    
+    // Auto-focus on name field
+    document.getElementById('name').focus();
+    
+    // Check if user is already logged in
+    if (window.currentUser) {
+        Utils.showAlert('You are already logged in. Redirecting...', 'info');
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 2000);
+    }
+    
+    // Password strength indicator
+    const passwordField = document.getElementById('password');
+    passwordField.addEventListener('input', function() {
+        const password = this.value;
+        const strength = calculatePasswordStrength(password);
+        showPasswordStrength(strength);
+    });
+});
+
+function calculatePasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 6) score += 1;
+    if (password.length >= 8) score += 1;
+    if (/[a-z]/.test(password)) score += 1;
+    if (/[A-Z]/.test(password)) score += 1;
+    if (/[0-9]/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    
+    return score;
+}
+
+function showPasswordStrength(score) {
+    const passwordField = document.getElementById('password');
+    
+    // Remove existing strength indicator
+    const existingIndicator = passwordField.parentNode.querySelector('.password-strength');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    if (passwordField.value.length === 0) return;
+    
+    const indicator = document.createElement('div');
+    indicator.className = 'password-strength mt-1';
+    
+    let strengthText = '';
+    let strengthClass = '';
+    
+    if (score <= 2) {
+        strengthText = 'Weak';
+        strengthClass = 'text-danger';
+    } else if (score <= 4) {
+        strengthText = 'Medium';
+        strengthClass = 'text-warning';
+    } else {
+        strengthText = 'Strong';
+        strengthClass = 'text-success';
+    }
+    
+    indicator.innerHTML = `
+        <small class="${strengthClass}">
+            <i class="fas fa-shield-alt me-1"></i>
+            Password strength: ${strengthText}
+        </small>
+    `;
+    
+    passwordField.parentNode.appendChild(indicator);
+}
+</script>
+{% endblock %}

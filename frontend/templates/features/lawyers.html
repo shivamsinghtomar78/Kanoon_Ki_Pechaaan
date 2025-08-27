@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Lawyer Network - Kanoon Ki Pechaan{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container-fluid">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card">
+                    <div class="text-center">
+                        <h2 class="mb-3">
+                            <i class="fas fa-network-wired text-cyan me-3"></i>
+                            Find Expert Lawyers
+                        </h2>
+                        <p class="text-muted mb-4">
+                            Connect with qualified legal professionals across India
+                        </p>
+                        
+                        <!-- Search Bar -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <form id="lawyerSearchForm" class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="searchQuery" 
+                                               placeholder="Search by name, specialization...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="specializationFilter">
+                                            <option value="">All Specializations</option>
+                                            <!-- Options will be loaded dynamically -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" id="locationFilter" 
+                                               placeholder="Location">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filters Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+                            <span class="text-muted">Filter by:</span>
+                            <div class="btn-group" role="group" aria-label="Experience filter">
+                                <input type="radio" class="btn-check" name="experienceFilter" id="expAll" value="" checked>
+                                <label class="btn btn-outline-secondary btn-sm" for="expAll">All</label>
+                                
+                                <input type="radio" class="btn-check" name="experienceFilter" id="exp1-3" value="1-3">
+                                <label class="btn btn-outline-secondary btn-sm" for="exp1-3">1-3 Years</label>
+                                
+                                <input type="radio" class="btn-check" name="experienceFilter" id="exp3-5" value="3-5">
+                                <label class="btn btn-outline-secondary btn-sm" for="exp3-5">3-5 Years</label>
+                                
+                                <input type="radio" class="btn-check" name="experienceFilter" id="exp5plus" value="5+">
+                                <label class="btn btn-outline-secondary btn-sm" for="exp5plus">5+ Years</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="text-muted">Sort by:</span>
+                            <select class="form-select form-select-sm" id="sortBy" style="width: auto;">
+                                <option value="name">Name</option>
+                                <option value="connections">Most Connected</option>
+                                <option value="recent">Recently Joined</option>
+                            </select>
+                            
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary active" id="gridView">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="listView">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Count -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div id="resultsCount" class="text-muted">
+                    <i class="fas fa-search me-2"></i>Loading lawyers...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lawyers Grid -->
+        <div id="lawyersContainer">
+            <div class="row" id="lawyersGrid">
+                <!-- Lawyers will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-cyan" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Finding lawyers...</p>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Lawyers pagination">
+                    <ul class="pagination justify-content-center" id="paginationContainer">
+                        <!-- Pagination will be generated here -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lawyer Profile Modal -->
+<div class="modal fade" id="lawyerProfileModal" tabindex="-1" aria-labelledby="lawyerProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lawyerProfileModalLabel">
+                    <i class="fas fa-user-tie me-2"></i>Lawyer Profile
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="lawyerProfileContent">
+                <!-- Profile content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="connectButton" style="display: none;">
+                    <i class="fas fa-handshake me-2"></i>Connect
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Connection Request Modal -->
+<div class="modal fade" id="connectionModal" tabindex="-1" aria-labelledby="connectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="connectionModalLabel">
+                    <i class="fas fa-handshake me-2"></i>Send Connection Request
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="connectionForm">
+                    <input type="hidden" id="selectedLawyerId" name="lawyer_id">
+                    
+                    <div class="mb-3">
+                        <label for="caseDescription" class="form-label">
+                            <i class="fas fa-file-text me-2"></i>Case Description *
+                        </label>
+                        <textarea class="form-control" id="caseDescription" name="case_description" 
+                                  rows="4" placeholder="Briefly describe your legal case or requirements..." required></textarea>
+                        <small class="text-muted">This helps the lawyer understand your needs better.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="urgentCase" name="urgent">
+                            <label class="form-check-label" for="urgentCase">
+                                <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                This is an urgent matter
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="connectionForm" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Send Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.lawyer-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lawyer-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-cyan);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+}
+
+.lawyer-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--dark-bg);
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.specialization-badge {
+    background: rgba(0, 255, 255, 0.2);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+    display: inline-block;
+}
+
+.connection-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.connection-status.pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.connection-status.accepted {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.connection-status.declined {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.lawyer-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-cyan);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.list-view .lawyer-card {
+    margin-bottom: 1rem;
+}
+
+.list-view .card-body {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.list-view .lawyer-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.list-view .lawyer-info {
+    flex-grow: 1;
+}
+
+.list-view .lawyer-actions {
+    flex-shrink: 0;
+}
+
+.search-highlight {
+    background: rgba(0, 255, 255, 0.3);
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .lawyer-card {
+        margin-bottom: 1rem;
+    }
+    
+    .list-view .card-body {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .lawyer-stats {
+        justify-content: space-between;
+        padding: 0.5rem 0;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/lawyers.js') }}"></script>
+{% endblock %}
