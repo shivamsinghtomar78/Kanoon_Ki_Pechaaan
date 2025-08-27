@@ -131,6 +131,37 @@ Before you begin, ensure you have:
 
    The application will be available at `http://localhost:5000`
 
+## ☁️ Vercel Deployment
+
+This application can be deployed to Vercel with minimal configuration:
+
+1. **Prepare for Deployment**
+   - Ensure all sensitive information is stored as environment variables in Vercel
+   - Remove any hardcoded credentials from the codebase
+
+2. **Deploy to Vercel**
+   - Connect your GitHub repository to Vercel
+   - Set the build command to: `pip install -r requirements-vercel.txt`
+   - Set the output directory to: `api/`
+   - Add environment variables in the Vercel dashboard:
+     - `GOOGLE_API_KEY` - Your Google AI API key
+     - `SECRET_KEY` - Your Flask secret key
+     - `JWT_SECRET_KEY` - Your JWT secret key
+     - Database configuration variables as needed
+
+3. **Configure Environment Variables**
+   In the Vercel dashboard, add the following environment variables:
+   ```
+   GOOGLE_API_KEY=your_google_api_key
+   SECRET_KEY=your_flask_secret_key
+   JWT_SECRET_KEY=your_jwt_secret_key
+   DB_HOST=your_database_host
+   DB_USER=your_database_user
+   DB_PASSWORD=your_database_password
+   DB_NAME=your_database_name
+   DB_PORT=3306
+   ```
+
 ## 🎯 How to Use
 
 ### For Clients
@@ -151,10 +182,14 @@ Before you begin, ensure you have:
 
 ```
 Kanoon_Ki_Pechaaan/
+├── api/                       # Vercel deployment entry point
+│   └── index.py              # Vercel handler
 ├── app.py                     # Flask application entry point
 ├── run_flask.py              # Application startup script
 ├── config.py                 # Configuration settings
 ├── requirements.txt          # Python dependencies
+├── requirements-vercel.txt   # Vercel-specific dependencies
+├── vercel.json               # Vercel deployment configuration
 ├── .env                      # Environment variables (not in repo)
 ├── .env.template            # Environment template
 ├── backend/                 # Backend API modules

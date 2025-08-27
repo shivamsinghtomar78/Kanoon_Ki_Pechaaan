@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.production
+.env.development
 
 # Firebase Credentials
 *.json
@@ -80,3 +81,6 @@ docs/_build/
 # Production
 *.pid
 *.sock
+
+# Vercel
+.vercel
