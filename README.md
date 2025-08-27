@@ -213,30 +213,6 @@ Kanoon_Ki_Pechaaan/
 └── uploads/              # File upload directory
 ```
 
-## 🤝 Contributing
+ 
 
-We welcome contributions from the community! Here's how you can help:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-If you need help or have questions:
-- Open an issue on GitHub
-- Contact our team at [support@kanoonkiprechaan.com](mailto:support@kanoonkiprechaan.com)
-
-## 🙏 Acknowledgments
-
-- Thanks to Google for providing the Gemini AI platform
-- Inspired by the need to make legal services more accessible
-- Built with ❤️ by the Kanoon Ki Pechaan team
+ 
